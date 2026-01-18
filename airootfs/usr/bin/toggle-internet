@@ -1,0 +1,3 @@
+#!/bin/bash
+STATUS=$(nmcli networking connectivity)
+[ "$STATUS" = "full" ] && nmcli networking off || nmcli networking on
