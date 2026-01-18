@@ -1,20 +1,43 @@
-name: Build CD OS Final
+name: Build CD OS
 on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: { image: "archlinux:latest", options: "--privileged" }
+    container: 
+      image: archlinux:latest
+      options: --privileged
     steps:
-      - name: Install Tools
+      - name: Install Build-Tools
         run: pacman -Syu --noconfirm git archiso devtools
-      - uses: actions/checkout@v4
-      - name: Build Process
+
+      - name: Code vom Repo holen
+        uses: actions/checkout@v4
+
+      - name: ISO Vorbereiten und Bauen
         run: |
+          # 1. CachyOS Template holen
           git clone https://github.com
-          cp -r airootfs/* cachyos-live-iso/airootfs/
-          chmod +x cachyos-live-iso/airootfs/usr/bin/*
+          
+          # 2. Deine Dateien in das Template kopieren
+          # Wir prüfen erst, ob der Ordner existiert
+          if [ -d "airootfs" ]; then
+            cp -rv airootfs/* cachyos-live-iso/airootfs/
+          fi
+          
+          # 3. Falls vorhanden, die Paketliste kopieren
+          if [ -f "packages.x86_64" ]; then
+            cp -v packages.x86_64 cachyos-live-iso/
+          fi
+
+          # 4. Skripte ausführbar machen
+          chmod -R +x cachyos-live-iso/airootfs/usr/bin/ || true
+          
+          # 5. Bauvorgang starten
           cd cachyos-live-iso
-          sed -i 's/compression="zstd"/compression="xz"/' profiledef.sh # Platzsparend für DVD
           ./build.sh -v
-      - uses: actions/upload-artifact@v4
-        with: { name: CD-OS-Image, path: cachyos-live-iso/out/*.iso }
+
+      - name: ISO als Download bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: CD-OS-Image
+          path: cachyos-live-iso/out/*.iso
