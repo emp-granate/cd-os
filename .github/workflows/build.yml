@@ -1,0 +1,20 @@
+name: Build CD OS Final
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: { image: "archlinux:latest", options: "--privileged" }
+    steps:
+      - name: Install Tools
+        run: pacman -Syu --noconfirm git archiso devtools
+      - uses: actions/checkout@v4
+      - name: Build Process
+        run: |
+          git clone https://github.com
+          cp -r airootfs/* cachyos-live-iso/airootfs/
+          chmod +x cachyos-live-iso/airootfs/usr/bin/*
+          cd cachyos-live-iso
+          sed -i 's/compression="zstd"/compression="xz"/' profiledef.sh # Platzsparend für DVD
+          ./build.sh -v
+      - uses: actions/upload-artifact@v4
+        with: { name: CD-OS-Image, path: cachyos-live-iso/out/*.iso }
