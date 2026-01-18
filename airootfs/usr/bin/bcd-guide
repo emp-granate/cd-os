@@ -1,0 +1,13 @@
+#!/bin/bash
+yad --title="BCD - Broken CD Help" --width=600 --height=450 --center --html --text="
+<body style='background: #111; color: #eee; font-family: sans-serif;'>
+  <div style='border: 2px solid #f977d3; padding: 20px; border-radius: 10px;'>
+    <h1 style='color: #00f2fe;'>💿 BCD - Broken CD OS Guide</h1>
+    <p>Hier ist die Hilfe für dein <b>Controlable Device</b>:</p>
+    <hr>
+    <b style='color: #71ef71;'>TERMINAL:</b> Tippe <code>bcd</code> für dieses Fenster.<br>
+    <b style='color: #71ef71;'>SICHERHEIT:</b> Nutze den <b>Killswitch</b> oben rechts.<br>
+    <hr>
+    <p><i>Tribute: Created with the help of Google AI Assistant.</i></p>
+  </div>
+</body>" --button="Schließen:0"
