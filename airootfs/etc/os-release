@@ -1,0 +1,5 @@
+NAME="CD OS"
+PRETTY_NAME="CD OS (Compact Disc | Clever Distro | Controlable Device)"
+ID=cdos
+ID_LIKE="cachyos arch"
+LOGO=broken-cd
