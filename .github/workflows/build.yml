@@ -15,29 +15,28 @@ jobs:
 
       - name: ISO Vorbereiten und Bauen
         run: |
-          # 1. CachyOS Template holen
-          git clone https://github.com
+          # 1. Das CachyOS Werkzeug-Set klonen
+          git clone https://github.com build_folder
           
-          # 2. Deine Dateien in das Template kopieren
-          # Wir prüfen erst, ob der Ordner existiert
+          # 2. Deine BCD-App, Schimmer-Configs und Skripte kopieren
           if [ -d "airootfs" ]; then
-            cp -rv airootfs/* cachyos-live-iso/airootfs/
+            cp -rv airootfs/* build_folder/airootfs/
           fi
           
-          # 3. Falls vorhanden, die Paketliste kopieren
+          # 3. Deine optimierte Paketliste (Tor, Hyprland etc.) einfügen
           if [ -f "packages.x86_64" ]; then
-            cp -v packages.x86_64 cachyos-live-iso/
+            cp -v packages.x86_64 build_folder/packages.x86_64
           fi
 
-          # 4. Skripte ausführbar machen
-          chmod -R +x cachyos-live-iso/airootfs/usr/bin/ || true
+          # 4. Alle Skripte (bcd, toggle-internet, update) scharf schalten
+          chmod -R +x build_folder/airootfs/usr/bin/ || true
           
-          # 5. Bauvorgang starten
-          cd cachyos-live-iso
+          # 5. Den CachyOS-Motor starten
+          cd build_folder
           ./build.sh -v
 
       - name: ISO als Download bereitstellen
         uses: actions/upload-artifact@v4
         with:
           name: CD-OS-Image
-          path: cachyos-live-iso/out/*.iso
+          path: build_folder/out/*.iso
